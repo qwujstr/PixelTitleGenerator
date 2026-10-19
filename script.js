@@ -16,23 +16,47 @@ let selectedScale = 2;
 let glyphs = new Map();
 let glyphHeight = 0;
 
+function getOccupiedColumns() {
+  const temp = document.createElement('canvas');
+  temp.width = atlas.width;
+  temp.height = atlas.height;
+  const tempCtx = temp.getContext('2d', { willReadFrequently: true });
+  tempCtx.drawImage(atlas, 0, 0);
+  const pixels = tempCtx.getImageData(0, 0, atlas.width, atlas.height).data;
+  const occupied = new Array(atlas.width).fill(false);
+  for (let x = 0; x < atlas.width; x++) {
+    for (let y = 0; y < atlas.height; y++) {
+      if (pixels[(y * atlas.width + x) * 4 + 3] !== 0) {
+        occupied[x] = true;
+        break;
+      }
+    }
+  }
+  return occupied;
+}
+
 function buildGlyphMap() {
   glyphs = new Map();
   glyphHeight = atlas.height;
-  const separator = 1;
-  const glyphWidth = (atlas.width - separator * (characters.length - 1)) / characters.length;
+  const occupied = getOccupiedColumns();
+  const runs = [];
+  let start = -1;
 
-  if (!Number.isInteger(glyphWidth) || glyphWidth < 1) {
-    notice.textContent = `Invalid sprite sheet: ${atlas.width}px cannot be split into ${characters.length} symbols with 1px gaps.`;
+  for (let x = 0; x <= occupied.length; x++) {
+    const filled = x < occupied.length && occupied[x];
+    if (filled && start === -1) start = x;
+    if (!filled && start !== -1) {
+      runs.push({ x: start, width: x - start });
+      start = -1;
+    }
+  }
+
+  if (runs.length !== characters.length) {
+    notice.textContent = `Sprite sheet has ${runs.length} glyphs, expected ${characters.length}.`;
     return false;
   }
 
-  [...characters].forEach((char, index) => {
-    glyphs.set(char, {
-      x: index * (glyphWidth + separator),
-      width: glyphWidth
-    });
-  });
+  [...characters].forEach((char, index) => glyphs.set(char, runs[index]));
   return true;
 }
 
@@ -97,9 +121,7 @@ function loadAtlas() {
     notice.textContent = '';
     if (buildGlyphMap()) render();
   };
-  atlas.onerror = () => {
-    notice.textContent = 'Could not load sprite sheet.';
-  };
+  atlas.onerror = () => notice.textContent = 'Could not load sprite sheet.';
   atlas.src = atlasSelect.value;
 }
 
@@ -111,7 +133,6 @@ function downloadImage() {
   const custom = Number(customWidth.value);
   let width;
   let height;
-
   if (custom > 0) {
     width = Math.max(1, Math.round(custom));
     height = Math.max(1, Math.round(canvas.height * (width / canvas.width)));
@@ -119,7 +140,6 @@ function downloadImage() {
     width = Math.max(1, canvas.width * selectedScale);
     height = Math.max(1, canvas.height * selectedScale);
   }
-
   target.width = width;
   target.height = height;
   targetCtx.imageSmoothingEnabled = false;
@@ -139,19 +159,14 @@ spacingInput.addEventListener('input', () => {
   render();
 });
 customWidth.addEventListener('input', () => {
-  if (Number(customWidth.value) > 0) {
-    scaleButtons.forEach(button => button.classList.remove('active'));
-  } else {
-    scaleButtons.forEach(button => button.classList.toggle('active', Number(button.dataset.scale) === selectedScale));
-  }
+  if (Number(customWidth.value) > 0) scaleButtons.forEach(button => button.classList.remove('active'));
+  else scaleButtons.forEach(button => button.classList.toggle('active', Number(button.dataset.scale) === selectedScale));
 });
-scaleButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    selectedScale = Number(button.dataset.scale);
-    customWidth.value = '';
-    scaleButtons.forEach(item => item.classList.toggle('active', item === button));
-  });
-});
+scaleButtons.forEach(button => button.addEventListener('click', () => {
+  selectedScale = Number(button.dataset.scale);
+  customWidth.value = '';
+  scaleButtons.forEach(item => item.classList.toggle('active', item === button));
+}));
 downloadButton.addEventListener('click', downloadImage);
 
 loadAtlas();
