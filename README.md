@@ -2,6 +2,8 @@
 
 Browser tool for generating pixel titles from sprite sheets in `assets/texture`.
 
+<img width="1487" height="840" alt="image" src="https://github.com/user-attachments/assets/641774fa-900c-4cf0-bbc9-c94c94d7a439" />
+
 ## Sprite sheets
 
 Sheets use this symbol order:
