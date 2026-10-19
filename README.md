@@ -1,29 +1,21 @@
 # Pixel Title Generator
 
-Browser tool for generating pixel titles from the sprite sheets in `assets/texture`.
+Browser tool for generating pixel titles from sprite sheets in `assets/texture`.
 
-## Sprite sheet format
+## Sprite sheets
 
-The current sheets contain exactly these symbols in this exact order:
+Sheets use this symbol order:
 
 `1234567890-=,._qwertyuiopasdfghjklzxcvbnm`
 
-Every glyph has the same height and neighboring glyphs are separated by a transparent pixel. The generator scans the sprite sheet columns, finds each glyph region, and maps the regions to the exact character order above.
+The generator slices each glyph from transparent separators and supports uppercase input by mapping it to lowercase.
 
-Uppercase input is normalized to lowercase, so `HELLO` uses the same sprite glyphs as `hello`.
+Sheet names follow `textsheet_atlas.png` or `textsheet_atlas_NAME.png`. `textsheet_atlas.png` is shown as `Purple`; for example `textsheet_atlas_blue.png` becomes `Blue` and `textsheet_atlas_gold.png` becomes `Gold`.
 
-## Included sheets
+Browser-only static sites cannot list a server directory automatically. `assets/texture/manifest.json` is therefore used for automatic selector population. When adding another sheet, add its filename to that manifest. Known Purple, Blue and Gold filenames are also available as fallbacks.
 
-- `assets/texture/textsheet_atlas.png`
-- `assets/texture/textsheet_atlas_blue.png`
+## Controls
 
-## Usage
+Enter text, choose a sheet, adjust letter spacing, Hue, Saturation, Brightness and Opacity. The preview can be zoomed with the mouse wheel or +/- controls and dragged with the mouse or pointer. Reset returns the preview to its original position and zoom.
 
-1. Open `index.html` through a static web server or GitHub Pages.
-2. Enter text.
-3. Select Default or Blue sprite sheet.
-4. Adjust letter spacing.
-5. Select 2x, 3x, 5x, or enter a custom output width.
-6. Click `Download PNG`.
-
-The exported PNG has a transparent background and image smoothing is disabled.
+Export supports 2x, 3x, 5x or a custom width and produces a transparent PNG with smoothing disabled.
