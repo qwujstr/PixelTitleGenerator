@@ -8,7 +8,7 @@ The current sheets contain exactly these symbols in this exact order:
 
 `1234567890-=,._qwertyuiopasdfghjklzxcvbnm`
 
-Every glyph has the same height and width. There is exactly 1 transparent pixel between neighboring glyphs. The generator calculates glyph width from the image width and slices every symbol by its fixed position instead of trying to detect letter shapes from transparent pixels inside the glyph.
+Every glyph has the same height and neighboring glyphs are separated by a transparent pixel. The generator scans the sprite sheet columns, finds each glyph region, and maps the regions to the exact character order above.
 
 Uppercase input is normalized to lowercase, so `HELLO` uses the same sprite glyphs as `hello`.
 
