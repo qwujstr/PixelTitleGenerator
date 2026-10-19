@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pixel Title Generator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="panel controls-panel">
+      <div class="brand-row"><div><p class="eyebrow">PIXEL TOOL</p><h1>Title Generator</h1></div><span class="status-dot"></span></div>
+      <label class="field"><span>Text</span><textarea id="textInput" rows="4" maxlength="80" spellcheck="false">pixel title</textarea></label>
+      <label class="field"><span>Sprite sheet</span><select id="atlasSelect"><option value="assets/texture/textsheet_atlas.png">Default</option><option value="assets/texture/textsheet_atlas_blue.png">Blue</option></select></label>
+      <div class="field inline-field"><div class="field-label-row"><span>Letter spacing</span><output id="spacingValue">2 px</output></div><input id="spacingInput" type="range" min="-4" max="24" value="2" step="1"></div>
+      <label class="field"><span>Export scale</span><div class="scale-grid"><button class="scale-button active" type="button" data-scale="2">2x</button><button class="scale-button" type="button" data-scale="3">3x</button><button class="scale-button" type="button" data-scale="5">5x</button></div></label>
+      <label class="field"><span>Custom width in pixels</span><input id="customWidth" type="number" min="1" step="1" placeholder="Example: 1024"></label>
+      <button id="downloadButton" class="download-button" type="button">Download PNG</button>
+      <p class="hint">Supported: 1234567890-=,._qwertyuiopasdfghjklzxcvbnm</p>
+    </section>
+    <section class="panel preview-panel"><div class="preview-header"><div><p class="eyebrow">PREVIEW</p><h2>Generated title</h2></div><span id="sizeLabel">0 × 0 px</span></div><div class="canvas-wrap"><canvas id="titleCanvas"></canvas></div><p id="notice" class="notice"></p></section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
